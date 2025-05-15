@@ -140,12 +140,14 @@
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Progress Bar -->
         <div class="mb-8">
-            <div class="flex justify-between mb-2">
-                <div id="progress1" class="text-sm font-medium text-blue-600">Check-In</div>
-                <div id="progress2" class="text-sm font-medium text-gray-500">Patient Details</div>
-                <div id="progress3" class="text-sm font-medium text-gray-500">Appointment</div>
-                <div id="progress4" class="text-sm font-medium text-gray-500">Payment</div>
-                <div id="progress5" class="text-sm font-medium text-gray-500">Complete</div>
+            <div class="flex justify-between mb-2 text-xs sm:text-sm">
+                <div id="progress1" class="text-sm font-medium text-blue-600 whitespace-nowrap hidden sm:block">Check-In</div>
+                <div id="progress2" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Patient Details</div>
+                <div id="progress3" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Appointment</div>
+                <div id="progress4" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Payment</div>
+                <div id="progress5" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Complete</div>
+                <!-- Mobile current step indicator -->
+                <div id="mobileCurrentStep" class="text-sm font-medium text-blue-600 whitespace-nowrap sm:hidden text-center w-full"></div>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2.5">
                 <div id="progressBar" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
@@ -478,13 +480,23 @@
             for (let i = 1; i <= totalSteps; i++) {
                 const element = document.getElementById(`progress${i}`);
                 if (i < currentStep) {
-                    element.className = 'text-sm font-medium text-green-600';
+                    element.className = 'text-sm font-medium text-green-600 hidden sm:block';
                 } else if (i === currentStep) {
-                    element.className = 'text-sm font-medium text-blue-600';
+                    element.className = 'text-sm font-medium text-blue-600 hidden sm:block';
                 } else {
-                    element.className = 'text-sm font-medium text-gray-500';
+                    element.className = 'text-sm font-medium text-gray-500 hidden sm:block';
                 }
             }
+
+            // Update mobile current step text
+            const stepTexts = {
+                1: 'Check-In',
+                2: 'Patient Details',
+                3: 'Appointment',
+                4: 'Payment',
+                5: 'Complete'
+            };
+            document.getElementById('mobileCurrentStep').textContent = stepTexts[currentStep];
         }
         
         function showStep(step) {

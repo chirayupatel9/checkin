@@ -75,7 +75,7 @@
         
         .progress-bar {
             height: 6px;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease-in-out;
         }
         
         
@@ -124,6 +124,53 @@
             border-color: #3b82f6;
             background-color: #f0f7ff;
         }
+
+        /* Mobile Navigation Styles */
+        .mobile-nav-step {
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .mobile-nav-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-container {
+            position: relative;
+            min-height: 24px;
+        }
+
+        .mobile-nav-step {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            white-space: nowrap;
+            text-align: center;
+            width: auto;
+            min-width: 100px;
+        }
+
+        .mobile-nav-step.prev {
+            left: 25%;
+        }
+
+        .mobile-nav-step.next {
+            left: 75%;
+        }
+
+        .mobile-nav-step.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mobile-nav-step.prev.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mobile-nav-step.next.visible {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -146,8 +193,12 @@
                 <div id="progress3" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Appointment</div>
                 <div id="progress4" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Payment</div>
                 <div id="progress5" class="text-sm font-medium text-gray-500 whitespace-nowrap hidden sm:block">Complete</div>
-                <!-- Mobile current step indicator -->
-                <div id="mobileCurrentStep" class="text-sm font-medium text-blue-600 whitespace-nowrap sm:hidden text-center w-full"></div>
+                <!-- Mobile step indicators -->
+                <div class="mobile-nav-container w-full sm:hidden">
+                    <div id="mobilePrevStep" class="mobile-nav-step prev text-sm font-medium text-gray-500"></div>
+                    <div id="mobileCurrentStep" class="mobile-nav-step text-sm font-medium text-blue-600"></div>
+                    <div id="mobileNextStep" class="mobile-nav-step next text-sm font-medium text-gray-500"></div>
+                </div>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2.5">
                 <div id="progressBar" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
@@ -488,7 +539,7 @@
                 }
             }
 
-            // Update mobile current step text
+            // Update mobile step indicators
             const stepTexts = {
                 1: 'Check-In',
                 2: 'Patient Details',
@@ -496,7 +547,31 @@
                 4: 'Payment',
                 5: 'Complete'
             };
-            document.getElementById('mobileCurrentStep').textContent = stepTexts[currentStep];
+
+            // Update current step
+            const currentStepElement = document.getElementById('mobileCurrentStep');
+            currentStepElement.textContent = stepTexts[currentStep];
+            currentStepElement.classList.add('visible');
+
+            // Update previous step (if exists)
+            const prevStepElement = document.getElementById('mobilePrevStep');
+            if (currentStep > 1) {
+                prevStepElement.textContent = stepTexts[currentStep - 1];
+                prevStepElement.classList.add('visible');
+            } else {
+                prevStepElement.textContent = '';
+                prevStepElement.classList.remove('visible');
+            }
+
+            // Update next step (if exists)
+            const nextStepElement = document.getElementById('mobileNextStep');
+            if (currentStep < totalSteps) {
+                nextStepElement.textContent = stepTexts[currentStep + 1];
+                nextStepElement.classList.add('visible');
+            } else {
+                nextStepElement.textContent = '';
+                nextStepElement.classList.remove('visible');
+            }
         }
         
         function showStep(step) {
